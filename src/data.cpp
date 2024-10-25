@@ -6,6 +6,121 @@
 //     strcpy(this->sentense, sentence);
 // }
 
+list_node* ask_for_node(char* sentence){
+    list_node* new_node = (list_node*)malloc(sizeof(list_node));
+    if (new_node == nullptr)
+    {
+        perror("malloc error\n");
+        exit(-1);
+    }
+
+    strcpy(new_node->sentence, sentence);
+    new_node->after = nullptr;
+    new_node->ahead = nullptr;
+    return new_node;
+}
+
+void node_append(list_node** top_node, char* sentence){
+    list_node* new_node = ask_for_node(sentence);
+    if (*top_node==nullptr)
+        *top_node = new_node;
+    
+    else{
+        list_node* cur = *top_node;
+        while (cur->after)
+            cur = cur->after;
+        cur->after = new_node;
+        new_node->ahead = cur;
+    }
+    return;
+}
+
+void endnode_delete(list_node** top_node){
+    if (top_node==nullptr||*top_node==nullptr) return;
+
+    if((*top_node)->after==nullptr){
+        free(*top_node);
+        *top_node = nullptr;
+        return;
+    }
+    
+    list_node* cur = *top_node;
+    list_node* nxt = (*top_node)->after;
+    while (nxt->after!=nullptr)
+    {
+        nxt = nxt->after;
+        cur = nxt;
+    }
+    
+    cur->after = nullptr;
+    free(nxt);
+    nxt = nullptr;
+    return;
+}
+
+//指定节点后面加入一个节点
+void insert_node_after(list_node** top_node, list_node* pos, char* sentence){
+    list_node* new_node = ask_for_node(sentence);
+    if(pos->after == nullptr){
+        pos->after = new_node;
+        new_node->ahead = pos;
+        return;
+    }
+    pos->after->ahead = new_node;
+    new_node->after = pos->after;
+    
+    pos->after = new_node;
+    new_node->ahead = pos;
+
+    return;
+}
+
+//在指定节点之前插入一个节点
+void insert_node_before(list_node** top_node, list_node* pos, char* sentence){
+    list_node* new_node = ask_for_node(sentence);
+    if (*top_node == pos)
+    {
+        pos->ahead = new_node;
+        new_node->after = pos;
+    }else{
+        pos->ahead->after = new_node;
+        new_node->ahead = pos->ahead;
+
+        pos->ahead = new_node;
+        new_node->after = pos;
+    }
+    return;
+}
+
+//删除指定节点
+void delete_node(list_node** top_node, list_node* pos){
+    //如果删除头节点
+    if(*top_node == pos){
+        *top_node = (*top_node)->after;
+        (*top_node)->ahead = nullptr;
+        free(pos);
+        pos = nullptr;
+    }else{
+        pos->ahead->after = pos->after;
+        if(pos->after!=nullptr)
+            pos->after->ahead = pos->ahead;
+        
+        free(pos);
+        pos = nullptr;
+    }
+}
+
+//销毁链表
+void distory_list(list_node** top_node){
+    while (top_node)
+    {   
+        list_node* nxt = (*top_node)->after;
+        free(*top_node);
+        *top_node = nxt;
+    }
+    return;
+}
+
 int insert(SL_list* ahead_node, SL_list* after_node, char* sentence){
     SL_list* app_node = (SL_list*)malloc(sizeof(SL_list));
     app_node->ahead = ahead_node;
@@ -44,21 +159,60 @@ int remove(SL_list* rm_node){
 text_buffer::text_buffer(){
     line = 0;
     char_num = 0;
+    // top_sentense = (SL_list*)malloc(sizeof(SL_list));
+    top_sentense = new SL_list;
+    // end_sentense = (SL_list*)malloc(sizeof(SL_list));
+}
+
+text_buffer::~text_buffer(){
+    printf("kill text_buffer\n");
+    return;
 }
 
 SL_list* text_buffer::load_file(char* file_name){
+    printf("nima\n");
     FILE* file = fopen(file_name, "r");
+    // SL_list* node = (SL_list*)malloc(sizeof(SL_list));
     SL_list* node = top_sentense;
-    while (fgets(node->sentense, SEN_LEN, file))
-    {
+    int i = 0;
+    while (1)
+    {   
+        printf("load begin\n");
+        char buf[SEN_LEN];
+        void* pin = fgets(buf, SEN_LEN, file);
+        printf("load end\n");
+        if (pin == nullptr)
+        { 
+            printf("nullptr\n");
+            break;
+        }
+        strcpy(node->sentense, buf);
         line++;
+        printf("%d ", i++);
         char_num+=strlen(node->sentense);
+        printf("%s\n", node->sentense);
         
         SL_list* nx_node = (SL_list*)malloc(sizeof(SL_list));
         nx_node->ahead = node;
         node->after = nx_node;
         node = nx_node;
     }
+    // while (fgets(node->sentense, SEN_LEN, file))
+    // {
+    //     line++;
+    //     printf("%d ", i++);
+    //     char_num+=strlen(node->sentense);
+    //     printf("%s\n", node->sentense);
+        
+    //     SL_list* nx_node = (SL_list*)malloc(sizeof(SL_list));
+    //     nx_node->ahead = node;
+    //     node->after = nx_node;
+    //     node = nx_node;
+    // }
+    
+    printf("null\n");
+
+    printf("\n");
 
     end_sentense = node;
     fclose(file);
@@ -95,14 +249,19 @@ int* prefix_function(char* s) {
 int* find_occurrences(char* text, char* pattern) {
     char* cur;
     sprintf(cur, "%s%s%s", pattern, '#', text);
+    printf("%s\n", cur);
     int sz1 = strlen(text), sz2 = strlen(pattern);
     int* v;
+    int* vp = v;
     int* lps = prefix_function(cur);
-    for (int i = sz2 + 1; i <= sz1 + sz2; i++) 
-        if (lps[i] == sz2) *(v++) = i-2*sz2;   
-    
+    for (int i = sz2 + 1; i <= sz1 + sz2; i++){
+        if (lps[i] == sz2){
+            printf("%d\n", i-2*sz2);
+            *(v++) = i-2*sz2;     
+        } 
+    }
     *v = 0;
-    return v;
+    return vp;
 }
 
 pos text_buffer::seek_phrase(char* phrase, SL_list* node){
@@ -122,21 +281,11 @@ pos text_buffer::seek_phrase(char* phrase, SL_list* node){
 }
 
 bool text_buffer::rpls_phrase(char* r_phrase, char* rd_phrase, SL_list* node, int char_pos){
-    pos mypos = seek_phrase(rd_phrase, node);
+    // pos mypos = seek_phrase(rd_phrase, node);
     char* temp;
     strncpy(temp, node->sentense, char_pos-1);
-    sprintf(temp, "%d%d%d", temp, r_phrase, node->sentense+char_pos+strlen(rd_phrase));
-    // SL_list* node = top_sentense;
-    // pos* pos_array;
-    // char* temp;
-    // for (int i = 0; i<line; i++)
-    // {
-    //     pos_array[i].line = node;
-    //     pos_array[i].char_pos = find_occurrences(node->sentense, rd_phrase);
-        
-
-    //     node = node->after;
-    // }
-    
-    // return pos_array;
+    sprintf(temp, "%d%d%d", temp, r_phrase, 
+            node->sentense+char_pos+strlen(rd_phrase));
+    strcpy(node->sentense, temp);
+    return true;
 }
