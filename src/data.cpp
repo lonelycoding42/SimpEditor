@@ -175,9 +175,12 @@ void text_buffer::load_file(char* file_name){
     // list_node** cur = top_node;
     char buf[SEN_LEN];
     while (fgets(buf, SEN_LEN, fp)){
+        
         // printf("%s", buf);
         node_append(top_node, buf);
         // *cur = (*cur)->after;
+        line++;
+        char_num+=strlen(buf);
     }
         
     // *bottom_node = (*cur);
