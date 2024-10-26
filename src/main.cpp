@@ -10,6 +10,7 @@ int main( )
 
     text_buffer myTEXT;
     myTEXT.load_file("test.txt");
+    myTEXT.save_file("test.txt", SAVE);
     // int* arr = find_occurrences(test1, test2);
     // for (int i = 0; i < 2; i++)
     // {

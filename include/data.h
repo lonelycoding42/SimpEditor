@@ -75,6 +75,8 @@ class text_buffer{
 public:
     int line;//行数
     int char_num;//字符数
+    list_node** top_node;
+
     SL_list* top_sentense; //第一行语句
     SL_list* end_sentense; //最后一行语句
 
@@ -83,7 +85,7 @@ public:
     //析构函数 
     ~text_buffer();
     //读取文件函数
-    SL_list* load_file(char* file_name);
+    void load_file(char* file_name);
     //file_name 要打开的文件名
     //将文本内容以链表形式载入，一行为一个链表
     //返回end_sentence 即最后一行语句

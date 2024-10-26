@@ -159,76 +159,42 @@ int remove(SL_list* rm_node){
 text_buffer::text_buffer(){
     line = 0;
     char_num = 0;
-    // top_sentense = (SL_list*)malloc(sizeof(SL_list));
-    top_sentense = new SL_list;
-    // end_sentense = (SL_list*)malloc(sizeof(SL_list));
+    *top_node = nullptr;
+    // *bottom_node = *top_node;
 }
 
 text_buffer::~text_buffer(){
+    distory_list(top_node);
     printf("kill text_buffer\n");
     return;
 }
 
-SL_list* text_buffer::load_file(char* file_name){
-    printf("nima\n");
-    FILE* file = fopen(file_name, "r");
-    // SL_list* node = (SL_list*)malloc(sizeof(SL_list));
-    SL_list* node = top_sentense;
-    int i = 0;
-    while (1)
-    {   
-        printf("load begin\n");
-        char buf[SEN_LEN];
-        void* pin = fgets(buf, SEN_LEN, file);
-        printf("load end\n");
-        if (pin == nullptr)
-        { 
-            printf("nullptr\n");
-            break;
-        }
-        strcpy(node->sentense, buf);
-        line++;
-        printf("%d ", i++);
-        char_num+=strlen(node->sentense);
-        printf("%s\n", node->sentense);
-        
-        SL_list* nx_node = (SL_list*)malloc(sizeof(SL_list));
-        nx_node->ahead = node;
-        node->after = nx_node;
-        node = nx_node;
+void text_buffer::load_file(char* file_name){
+    //这里开销有点大，想想怎么优化
+    FILE* fp = fopen(file_name, "r");
+    // list_node** cur = top_node;
+    char buf[SEN_LEN];
+    while (fgets(buf, SEN_LEN, fp)){
+        // printf("%s", buf);
+        node_append(top_node, buf);
+        // *cur = (*cur)->after;
     }
-    // while (fgets(node->sentense, SEN_LEN, file))
-    // {
-    //     line++;
-    //     printf("%d ", i++);
-    //     char_num+=strlen(node->sentense);
-    //     printf("%s\n", node->sentense);
         
-    //     SL_list* nx_node = (SL_list*)malloc(sizeof(SL_list));
-    //     nx_node->ahead = node;
-    //     node->after = nx_node;
-    //     node = nx_node;
-    // }
-    
-    printf("null\n");
-
-    printf("\n");
-
-    end_sentense = node;
-    fclose(file);
-    return node;
+    // *bottom_node = (*cur);
+    return;
 }
+
 
 int text_buffer::save_file(char* file_name, int mode){
     FILE* file = fopen(file_name, "w");
-    SL_list* node = top_sentense;
+    list_node** node = top_node;
     while (node!=nullptr)
-    {
-        fwrite(node->sentense, sizeof(node->sentense), 1, file);
-        node = node->after;
+    {   
+        // printf("%s", (*node)->sentence);
+        fwrite((*node)->sentence, sizeof((*node)->sentence), 1, file);
+        *node = (*node)->after;
     }
     fclose(file);
-
     return 0;
 }
 
