@@ -18,7 +18,7 @@ Display::Display()
     cursor_pos.Y=(lines-3)/2;
     mycursor.Moveto(cursor_pos,this->myconsole);
     printf("Please Input File's Name:");
-    int n=0,maxx=101;
+    int n=0,maxx=100;
     char ch=getchar();
     doc_name=new char[100];
     while(ch!='\n')
@@ -35,6 +35,11 @@ Display::Display()
         doc_name[n]=ch;
         n++;
         ch=getchar();
+    }
+    n--;
+    if((!n)||mytext_buffer.load_file(doc_name)==NULL)
+    {
+
     }
 
     printf("%s",doc_name);

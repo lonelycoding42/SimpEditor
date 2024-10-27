@@ -2,6 +2,7 @@
 #include<windows.h>
 #include<conio.h>
 #include"Cursor.h"
+#include"data.h"
 
 class Display
 {
@@ -13,5 +14,6 @@ public:
 
     Display();                                          //初始化函数时获取窗口句柄并设置窗口尺寸
 protected:
-    Cursor mycursor;
+    Cursor mycursor;                                    //光标子类
+    text_buffer mytext_buffer;                          //缓冲区子类
 };
