@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+# 忽略.vscode文件
+.vscode
