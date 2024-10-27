@@ -4,18 +4,26 @@
 
 int main( )
 {
-    char test1[100] = "abcdabcd\r\n";
+    char test1[100] = "ababa";
     char test2[100] = "ab";
     // printf("%s\n%s\n\n", test1, test2);
 
-    // text_buffer myTEXT;
-    int_array my_arr =  prefix_function(test1);
-    for (int i = 0; i < my_arr.array_len; i++)
-    {
-        printf("%d ", my_arr.array[i]);
-    }
+    text_buffer myTEXT;
+
+    // int_array my_arr = find_occurrences(test1, test2);
     
-    // myTEXT.load_file("test");
+    // for (int i = 0; i < my_arr.array_len; i++)
+    //     printf("%d ", my_arr.array[i]);
+    
+    myTEXT.load_file("test");
+    myTEXT.rpls_phrase("ab", "abc", *(myTEXT.top_node));
+    printf("%s", (*(myTEXT.top_node))->sentence);
+
+    // for (int i = 0; i < pos.array_len; i++)
+    // {
+    //     printf("%d ", pos.array[i]);
+    // }
+    
     // myTEXT.save_file("test");
 
     // int* arr = find_occurrences(test1, test2);
@@ -23,5 +31,5 @@ int main( )
     // {
     //     printf("%d\n", arr[i]);
     // }
-    
+    return 0;
 }
