@@ -14,70 +14,68 @@ Display::Display()
     this->lines=tmp.dwSize.Y;
 
     //要求输入文件名
-    cursor_pos.X=(cols-25)/2;
-    cursor_pos.Y=(lines-3)/2;
-    mycursor.Moveto(cursor_pos,this->myconsole);
-    printf("Please Input File's Name:");
-    int n=0,maxx=100;
-    char ch=getchar();
-    doc_name=new char[100];
-    while(ch!='\n')
-    {
-        
-        if(n+1>=maxx)
+    /**
+     * 图形化界面的需求，目前不需要
+     * cursor_pos.X=(cols-25)/2;
+     * cursor_pos.Y=(lines-3)/2;
+     * mycursor.Moveto(cursor_pos,this->myconsole);
+    **/
+//    while(1)
+//    {
+        cursor_pos.X=(cols-25)/2;
+        cursor_pos.Y=(lines-3)/2;
+        mycursor.Moveto(cursor_pos,this->myconsole);
+        printf("Please Input File's Name:");
+        int n=0,maxx=100;
+        char ch=getchar();
+        doc_name=new char[100];
+        while(ch!='\n')
         {
-            maxx*=2;
-            char* tmp_doc_name=doc_name;
-            doc_name=new char[maxx];
-            strcpy(doc_name,tmp_doc_name);
-            delete [] tmp_doc_name;
+            if(n+1>=maxx)
+            {
+                maxx*=2;
+                char* tmp_doc_name=doc_name;
+                doc_name=new char[maxx];
+                strcpy(doc_name,tmp_doc_name);
+                delete [] tmp_doc_name;
+            }
+            doc_name[n]=ch;
+            n++;
+            ch=getchar();
         }
-        doc_name[n]=ch;
-        n++;
-        ch=getchar();
-    }
-    n--;
-    if((!n)||mytext_buffer.load_file(doc_name)==NULL)
-    {
-
-    }
+        n--;
+        if(!n)
+        {
+            printf("Input Nothing!\n");
+            // continue;
+        }
+        SetConsoleTitle(doc_name);
+        // break;
+//    }
 
     printf("%s",doc_name);
-    // for(int i=1;i<=n;i++)
-    // {
-    //     printf("\n%c",doc_name[i]);
-    // }
-    // fgets(this->doc_name,100,stdin);
-    // char* tmp_cmd;
-    // sprintf(tmp_cmd,"title %s",this->doc_name);
-    // system(tmp_cmd);
-    //printf("Cillo");
 
-    // //设置窗口大小
-    // COORD newBuffersize={51,21};
-    // SMALL_RECT newWindowSize={0,0,50,20};
-    // SetConsoleWindowInfo(this->myconsole,TRUE,&newWindowSize);
-    // SetConsoleScreenBufferSize(this->myconsole,newBuffersize);
-    // //选择窗口大小
-    // this->cursor_pos={10,6};
-    // mycursor.Moveto(this->cursor_pos,this->myconsole);
-    // printf("Please choose the window size");
-    // this->cursor_pos={16,8};
-    // mycursor.Moveto(this->cursor_pos,this->myconsole);
-    // printf("20*80     30*120");
-    // this->cursor_pos={16,10};
-    // mycursor.Moveto(this->cursor_pos,this->myconsole);
-    // printf("40*160    50*200");
-    // system("pause");
-    // newBuffersize={21,11};
-    // newWindowSize={20,10};
-    // SetConsoleWindowInfo(this->myconsole,TRUE,&newWindowSize);
-    // SetConsoleScreenBufferSize(this->myconsole,newBuffersize);
-    // while(1)
-    // {
-    //     if(kbhit())
-    //     {
-            
-    //     }
-    // }
+    /**
+     * 图形化Bash界面
+     * //设置窗口大小
+     * COORD newBuffersize={51,21};
+     * SMALL_RECT newWindowSize={0,0,50,20};
+     * SetConsoleWindowInfo(this->myconsole,TRUE,&newWindowSize);
+     * SetConsoleScreenBufferSize(this->myconsole,newBuffersize);
+     * //选择窗口大小
+     * this->cursor_pos={10,6};
+     * mycursor.Moveto(this->cursor_pos,this->myconsole);
+     * printf("Please choose the window size");
+     * this->cursor_pos={16,8};
+     * mycursor.Moveto(this->cursor_pos,this->myconsole);
+     * printf("20*80     30*120");
+     * this->cursor_pos={16,10};
+     * mycursor.Moveto(this->cursor_pos,this->myconsole);
+     * printf("40*160    50*200");
+     * system("pause");
+     * newBuffersize={21,11};
+     * newWindowSize={20,10};
+     * SetConsoleWindowInfo(this->myconsole,TRUE,&newWindowSize);
+     * SetConsoleScreenBufferSize(this->myconsole,newBuffersize);
+    **/
 }
