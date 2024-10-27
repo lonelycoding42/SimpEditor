@@ -2,7 +2,11 @@
 #include "../include/data.h"
 // #include "../include/Cursor.h"
 
-int main( )
+/*
+ *该版本SimpEditor为未完成版，只能实现基础功能，带Bash图形化的版本在没有ddl的日子再写
+ */
+
+int main()
 {
     char test1[100] = "abcdabcd";
     char test2[100] = "ab";
