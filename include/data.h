@@ -46,38 +46,17 @@ void delete_node(list_node** top_node, list_node* pos);
 //销毁链表
 void distory_list(list_node** top_node);
 
-struct int_array
+typedef struct int_array
 {
-    int array[SEN_LEN];
     int array_len;
-};
-
-
-// //用于存储句子的双向链表
-// struct SL_list{
-//     SL_list* ahead;  //前向指针
-//     char sentense[SEN_LEN];  //文件语句 
-//     int sen_len;     //句长
-//     SL_list* after;  //后向指针
-//     // static int node_num; //链节数
-// };
-
-// //插入一个链节
-// int insert(SL_list* ahead_node, SL_list* after_node, char* sentence);
-// //在末尾添加一个链节
-// int append(SL_list* ahead_node, char* sentense);
-
-// struct pos{
-//     SL_list* line;
-//     int* char_pos;
-// };
+    int array[SEN_LEN];
+}int_array;
 
 //生成前缀函数
 int_array prefix_function(char* s);
 
 //KMP算法
-int* find_occurrences(char* text, char* pattern);
-
+int_array find_occurrences(char* text, char* pattern);
 
 //读取修改写入文件和修改缓存区操作
 class text_buffer{
@@ -98,17 +77,20 @@ public:
     //file_name 要打开的文件名
     //将文本内容以链表形式载入，一行为一个链表
     //返回end_sentence 即最后一行语句
+
     
     //写入文件函数
     int save_file(char* file_name);
+
+
     //查找短语函数
-    // pos seek_phrase(char* phrase, SL_list* node);
+    int_array seek_phrase(char* phrase, list_node* node);
+    
     //替换短语函数
-    // bool rpls_phrase(char* r_phrase,  //替换的短语
-    //                  char* rd_phrase, //被替换的短语
-    //                  SL_list* node,
-    //                  int char_pos
-    //                  );
+    bool rpls_phrase(char* r_phrase,  //替换的短语
+                     char* rd_phrase, //被替换的短语
+                     list_node* node
+                     );
 
 };
 

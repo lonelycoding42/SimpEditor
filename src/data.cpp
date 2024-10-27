@@ -112,7 +112,7 @@ void delete_node(list_node** top_node, list_node* pos){
 
 //销毁链表
 void distory_list(list_node** top_node){
-    while (top_node)
+    while (*top_node)
     {   
         list_node* nxt = (*top_node)->after;
         free(*top_node);
@@ -171,6 +171,8 @@ text_buffer::~text_buffer(){
 }
 
 int text_buffer::load_file(char* file_name){
+    if(access(file_name, F_OK)==-1) return ERROR;
+
     //这里开销有点大，想想怎么优化
     FILE* fp = fopen(file_name, "r");
     if ( fp == nullptr) return ERROR;
@@ -192,6 +194,8 @@ int text_buffer::load_file(char* file_name){
 }
 
 int text_buffer::save_file(char* file_name){
+    // if(access(file_name, F_OK)==-1) return ERROR;
+
     FILE* fp = fopen(file_name, "w");
     if ( fp == nullptr) return ERROR;
     
@@ -207,11 +211,12 @@ int text_buffer::save_file(char* file_name){
 }
 
 //生成前缀函数
-int_array prefix_function(char* s){
+inline int_array prefix_function(char* s){
     int n = strlen(s);
-    int_array  pi{
-        {0}, 0
-    };
+    int_array pi = {{0}, 0};
+    // int_array  pi{
+    //     {0}, 0
+    // };
     pi.array_len = n;
     printf("------\n");
     for (int i = 1; i < n; i++) {
@@ -224,39 +229,73 @@ int_array prefix_function(char* s){
 }
 
 //KMP算法
-// int* find_occurrences(char* text, char* pattern) {
-//     char* cur;
-//     sprintf(cur, "%s%s%s", pattern, '#', text);
-//     printf("%s\n", cur);
-//     int sz1 = strlen(text), sz2 = strlen(pattern);
-//     int* v;
-//     int* vp = v;
-//     int* lps = prefix_function(cur);
-//     for (int i = sz2 + 1; i <= sz1 + sz2; i++){
-//         if (lps[i] == sz2){
-//             printf("%d\n", i-2*sz2);
-//             *(v++) = i-2*sz2;     
-//         } 
-//     }
-//     *v = 0;
-//     return vp;
-// }
+int_array find_occurrences(char* text, char* pattern) {
+    char cur[SEN_LEN];
+    sprintf(cur, "%s%c%s", pattern, '#', text);
+    // printf("%s\n", cur);
+    int sz1 = strlen(text), sz2 = strlen(pattern);
+    int_array vector{{0}, 0};
+    // printf("exe pre---\n");
 
-// pos text_buffer::seek_phrase(char* phrase, SL_list* node){
-//     // SL_list* node = top_sentense;
-//     // pos pos_array;
-//     // for (int i = 0; i<line; i++)
-//     // {
-//     //     pos_array[i].line = node;
-//     //     pos_array[i].char_pos = find_occurrences(node->sentense, phrase);
-//     //     node = node->after;
-//     // }
-//     // return pos_array;
-//     pos pos_info;
-//     pos_info.line = node;
-//     pos_info.char_pos = find_occurrences(node->sentense, phrase);
-//     return pos_info;
-// }
+    int n = strlen(cur);
+    int_array pi = {{0}, 0};
+    // int_array  pi{
+    //     {0}, 0
+    // };
+    pi.array_len = n;
+    // printf("------\n");
+    for (int i = 1; i < n; i++) {
+        int j = pi.array[i - 1];
+        while (j > 0 && cur[i] != cur[j]) j = pi.array[j - 1];
+        if (cur[i] == cur[j]) j++;
+        pi.array[i] = j;
+    }
+    // return pi;
+
+    // int_array lps = prefix_function(cur);
+    // printf("exe find_occu----\n");
+
+    for (int i = sz2 + 1; i <= sz1 + sz2; i++){
+        // printf("get sz2: %d, lps.array[i]: %d----\n", sz2, pi.array[i]);
+
+        if (pi.array[i] == sz2){
+            // printf("%d\n", i-2*sz2);
+            vector.array[vector.array_len++] = i-2*sz2;     
+        }
+    }
+    return vector;
+}
+
+int_array text_buffer::seek_phrase(char* phrase, list_node* node){
+    int_array pos_array = find_occurrences(node->sentence, phrase);
+    return pos_array;
+}
+
+bool text_buffer::rpls_phrase(char* r_phrase, char* rd_phrase, list_node* node){
+    int_array pos_array = find_occurrences(node->sentence, rd_phrase);
+    char* sentence = node->sentence;
+    char slice_buf[SEN_LEN] = {0}, buf[SEN_LEN] = {0};
+    strncpy(buf, sentence, pos_array.array[0]);
+    for (int i = 0; i < pos_array.array_len; i++)
+    {   
+        if (i+1<pos_array.array_len)
+        {
+            strncpy(slice_buf, 
+                sentence+pos_array.array[i]+strlen(rd_phrase), 
+                pos_array.array[i+1]-(pos_array.array[i]+strlen(rd_phrase)));
+
+        }else{
+            strncpy(slice_buf, 
+                sentence+pos_array.array[i]+strlen(rd_phrase), 
+                strlen(sentence)-(pos_array.array[i]+strlen(rd_phrase)));
+        }
+        
+        sprintf(buf, "%s%s%s", buf, r_phrase, slice_buf);
+    }
+    
+    strcpy(node->sentence, buf);
+    return true;
+}
 
 // bool text_buffer::rpls_phrase(char* r_phrase, char* rd_phrase, SL_list* node, int char_pos){
 //     // pos mypos = seek_phrase(rd_phrase, node);
