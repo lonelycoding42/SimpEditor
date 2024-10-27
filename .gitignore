@@ -31,5 +31,6 @@
 *.out
 *.app
 
-#vscode configration
+# 忽略.vscode文件
 .vscode
+
