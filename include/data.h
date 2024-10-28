@@ -41,7 +41,7 @@ void insert_node_after(list_node** top_node, list_node* pos, char* sentence);
 list_node* insert_node_before(list_node** top_node, list_node* pos, char* sentence);
 
 //删除一个指定的节点
-void delete_node(list_node** top_node, list_node* pos);
+list_node* delete_node(list_node** top_node, list_node* pos);
 
 //销毁链表
 void distory_list(list_node** top_node);
