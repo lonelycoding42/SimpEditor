@@ -14,12 +14,34 @@ int main()
         {
         //展示当前文件内容
         case 'v':
-            
+            if(!MyDisplay.view_file())
+            {
+                printf("Error View File\n");
+            }
             break;
-        
+        //插入某一行
+        case 'i':
+            if(!MyDisplay.insert_file())
+            {
+                printf("Error Insert File\n");
+            }
+            break;
+        case 'd':
+            if(!MyDisplay.delete_file())
+            {
+                printf("Error Delete File\n");
+            }
+            break;
         default:
+            printf("No Such Commands, Input 'h' for help\n");
             break;
         }
+        while(ch!='\n')
+        {
+            ch=takein();
+        }
+        printf("> ");
+        ch=takein();
     }
     system("pause");
 }

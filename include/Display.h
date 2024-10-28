@@ -17,6 +17,8 @@ public:
 
     Display();                                          //初始化函数时获取窗口句柄并设置窗口尺寸
     bool view_file();                                   //查看文件内容
+    bool insert_file();                                 //插入文件内容
+    bool delete_file();                                 //删除文件内容
 protected:
     Cursor mycursor;                                    //光标子类
     text_buffer mytext_buffer;                          //缓冲区子类

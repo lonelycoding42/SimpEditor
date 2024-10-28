@@ -38,7 +38,7 @@ void endnode_delete(list_node** top_node);
 void insert_node_after(list_node** top_node, list_node* pos, char* sentence);
 
 //在指定节点之前插入一个节点
-void insert_node_before(list_node** top_node, list_node* pos, char* sentence);
+list_node* insert_node_before(list_node** top_node, list_node* pos, char* sentence);
 
 //删除一个指定的节点
 void delete_node(list_node** top_node, list_node* pos);
