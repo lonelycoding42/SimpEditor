@@ -83,7 +83,6 @@ list_node* insert_node_before(list_node** top_node, list_node* pos, char* senten
         new_node->after = pos;
         return *top_node;
     }
-    return;
 }
 
 //删除指定节点
@@ -164,7 +163,12 @@ int text_buffer::load_file(char* file_name){
     // list_node** cur = top_node;
     char buf[SEN_LEN] = {0};
     while (fgets(buf, SEN_LEN, fp)){
+        if (buf[strlen(buf)-1] != '\n')
+        {
+            buf[strlen(buf)] = '\n'; 
+        }
         
+
         // printf("%s", buf);
         // puts(buf);
         node_append(top_node, buf);
@@ -184,13 +188,15 @@ int text_buffer::save_file(char* file_name){
     if ( fp == nullptr) return ERROR;
 
     list_node** node = top_node;
+    list_node* tem = *top_node;
     while ((*node)!=nullptr)
     {   
         // printf("%s", (*node)->sentence);
-        fwrite((*node)->sentence, sizeof((*node)->sentence), 1, fp);
+        fputs((*node)->sentence, fp);
         *node = (*node)->after;
     }
     fclose(fp);
+    *top_node = tem;
     return 1;
 }
 
@@ -257,6 +263,10 @@ int_array text_buffer::seek_phrase(char* phrase, list_node* node){
 
 bool text_buffer::rpls_phrase(char* r_phrase, char* rd_phrase, list_node* node){
     int_array pos_array = find_occurrences(node->sentence, rd_phrase);
+    if (!pos_array.array_len)
+    {
+        return true;
+    }
     char* sentence = node->sentence;
     char slice_buf[SEN_LEN] = {0}, buf[SEN_LEN] = {0};
     strncpy(buf, sentence, pos_array.array[0]);
@@ -276,7 +286,6 @@ bool text_buffer::rpls_phrase(char* r_phrase, char* rd_phrase, list_node* node){
 
         sprintf(buf, "%s%s%s", buf, r_phrase, slice_buf);
     }
-
     strcpy(node->sentence, buf);
     return true;
 }

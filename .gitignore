@@ -35,4 +35,4 @@
 .vscode
 
 #忽略测试文件
-test
+output
