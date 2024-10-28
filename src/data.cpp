@@ -180,7 +180,7 @@ int text_buffer::load_file(char* file_name){
     while (fgets(buf, SEN_LEN, fp)){
         
         // printf("%s", buf);
-        puts(buf);
+        // puts(buf);
         node_append(top_node, buf);
         // *cur = (*cur)->after;
         line++;
@@ -188,7 +188,7 @@ int text_buffer::load_file(char* file_name){
     }
         
     // *bottom_node = (*cur);
-    return 0;
+    return 1;
 }
 
 int text_buffer::save_file(char* file_name){

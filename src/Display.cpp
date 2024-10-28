@@ -1,5 +1,15 @@
 #include"../include/Display.h"
 
+char takein()
+{
+    char ch=getchar();
+    if(ch>='A'&&ch<='Z')
+    {
+        ch=ch-'A'+'a';
+    }
+    return ch;
+}
+
 Display::Display()
 {
     //更改窗口标题并获取窗口句柄
@@ -8,10 +18,10 @@ Display::Display()
     
     //获取窗口大小
     //因为没有搞懂新版控制台如何更改大小，而旧控制台虽然可以更改大小，但是又神必的不能使用ANSI码控制，遂放弃更改大小
-    CONSOLE_SCREEN_BUFFER_INFO tmp;
-	GetConsoleScreenBufferInfo(this->myconsole,&tmp);
-    this->cols=tmp.dwSize.X;
-    this->lines=tmp.dwSize.Y;
+    // CONSOLE_SCREEN_BUFFER_INFO tmp;
+	// GetConsoleScreenBufferInfo(this->myconsole,&tmp);
+    // this->cols=tmp.dwSize.X;
+    // this->lines=tmp.dwSize.Y;
 
     //要求输入文件名
     /**
@@ -20,15 +30,19 @@ Display::Display()
      * cursor_pos.Y=(lines-3)/2;
      * mycursor.Moveto(cursor_pos,this->myconsole);
     **/
-//    while(1)
-//    {
-        cursor_pos.X=(cols-25)/2;
-        cursor_pos.Y=(lines-3)/2;
-        mycursor.Moveto(cursor_pos,this->myconsole);
+    doc_name=new char[100];
+    memset(doc_name,0,sizeof(doc_name));
+    while(1)
+    {
+        //出于相同的理由被注释
+        // cursor_pos.X=(cols-25)/2;
+        // cursor_pos.Y=(lines-3)/2;
+        // mycursor.Moveto(cursor_pos,this->myconsole);
+        
+        //输入文件名
         printf("Please Input File's Name:");
         int n=0,maxx=100;
         char ch=getchar();
-        doc_name=new char[100];
         while(ch!='\n')
         {
             if(n+1>=maxx)
@@ -36,6 +50,7 @@ Display::Display()
                 maxx*=2;
                 char* tmp_doc_name=doc_name;
                 doc_name=new char[maxx];
+                memset(doc_name,0,sizeof(doc_name));
                 strcpy(doc_name,tmp_doc_name);
                 delete [] tmp_doc_name;
             }
@@ -44,16 +59,25 @@ Display::Display()
             ch=getchar();
         }
         n--;
-        if(!n)
+        if(n<0)
         {
             printf("Input Nothing!\n");
-            // continue;
+            continue;
         }
+        //将标题设置为文件名
         SetConsoleTitle(doc_name);
-        // break;
-//    }
-
-    printf("%s",doc_name);
+        //读取文件
+        if(!mytext_buffer.load_file(doc_name))
+        {
+            printf("Error Open File\n");
+            memset(doc_name,0,sizeof(doc_name));
+            continue;
+        }
+        break;
+    }
+    printf("> ");
+    //测试功能端口
+    // printf("%s",doc_name);
 
     /**
      * 图形化Bash界面
@@ -79,3 +103,4 @@ Display::Display()
      * SetConsoleScreenBufferSize(this->myconsole,newBuffersize);
     **/
 }
+
