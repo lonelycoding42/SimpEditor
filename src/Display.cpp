@@ -30,8 +30,8 @@ Display::Display()
      * cursor_pos.Y=(lines-3)/2;
      * mycursor.Moveto(cursor_pos,this->myconsole);
     **/
-    doc_name=new char[100];
-    memset(doc_name,0,sizeof(doc_name));
+    doc_name=new char[SEN_LEN];
+    memset(doc_name,0,SEN_LEN*sizeof(char));
     while(1)
     {
         //出于相同的理由被注释
@@ -41,7 +41,7 @@ Display::Display()
         
         //输入文件名
         printf("Please Input File's Name: ");
-        int n=0,maxx=100;
+        int n=0,maxx=SEN_LEN;
         char ch=getchar();
         while(ch!='\n')
         {
@@ -50,7 +50,7 @@ Display::Display()
                 maxx*=2;
                 char* tmp_doc_name=doc_name;
                 doc_name=new char[maxx];
-                memset(doc_name,0,sizeof(doc_name));
+                memset(doc_name,0,SEN_LEN*sizeof(char));
                 strcpy(doc_name,tmp_doc_name);
                 delete [] tmp_doc_name;
             }
@@ -70,7 +70,7 @@ Display::Display()
         if(!mytext_buffer.load_file(doc_name))
         {
             printf("Error Open File\n");
-            memset(doc_name,0,sizeof(doc_name));
+            memset(doc_name,0,SEN_LEN*sizeof(char));
             continue;
         }
         break;
@@ -104,7 +104,7 @@ Display::Display()
     **/
 }
 
-bool Display::view_file()  
+bool Display::view_file()
 {
     list_node* myLine=(*mytext_buffer.top_node);
     // printf("%d\n",mytext_buffer.line);
@@ -137,7 +137,7 @@ bool Display::insert_file()
     //获取要插入的内容
     int n=0,c=0;
     char* insert_inf=new char[SEN_LEN];
-    memset(insert_inf,0,sizeof(insert_inf));
+    memset(insert_inf,0,SEN_LEN*sizeof(char));
     char ch=getchar();
     while(ch=='\n')
     {
@@ -193,7 +193,6 @@ bool Display::delete_file()
         mytext_buffer.line--;
         mytext_buffer.char_num-=strlen(Myline->sentence);
         (*mytext_buffer.top_node)=delete_node(mytext_buffer.top_node,Myline);
-        
         break;
     }
     return TRUE;
@@ -216,7 +215,7 @@ bool Display::find_file()
             for(int i=0;i<strlen(myLine->sentence);i++)
             {
                 if(!myArray.array_len) break;
-                if(i>=myArray.array[c])
+                if(i+1>=myArray.array[c])
                 {
                     printf("\x1b[0;7m");
                 }
@@ -249,13 +248,13 @@ bool Display::save_file()
 
 bool Display::resave_file()
 {
-    char* resave_name=new char[100];
-    memset(resave_name,0,sizeof(resave_name));
+    char* resave_name=new char[SEN_LEN];
+    memset(resave_name,0,SEN_LEN*sizeof(char));
     while(1)
     {
         //输入文件名
         printf("Please Input File's Name: ");
-        int n=0,maxx=100;
+        int n=0,maxx=SEN_LEN;
         char ch=getchar();
         while(ch!='\n')
         {
@@ -264,7 +263,7 @@ bool Display::resave_file()
                 maxx*=2;
                 char* tmp_doc_name=resave_name;
                 resave_name=new char[maxx];
-                memset(resave_name,0,sizeof(resave_name));
+                memset(resave_name,0,SEN_LEN*sizeof(char));
                 strcpy(resave_name,tmp_doc_name);
                 delete [] tmp_doc_name;
             }
@@ -291,12 +290,12 @@ bool Display::resave_file()
 
 bool Display::reload()
 {
-    memset(doc_name,0,sizeof(doc_name));
+    memset(doc_name,0,SEN_LEN*sizeof(char));
     while(1)
     {
         //输入文件名
         printf("Please Input File's Name: ");
-        int n=0,maxx=100;
+        int n=0,maxx=SEN_LEN;
         char ch=getchar();
         while(ch!='\n')
         {
@@ -305,7 +304,7 @@ bool Display::reload()
                 maxx*=2;
                 char* tmp_doc_name=doc_name;
                 doc_name=new char[maxx];
-                memset(doc_name,0,sizeof(doc_name));
+                memset(doc_name,0,SEN_LEN*sizeof(char));
                 strcpy(doc_name,tmp_doc_name);
                 delete [] tmp_doc_name;
             }
@@ -327,7 +326,7 @@ bool Display::reload()
         if(!mytext_buffer.load_file(doc_name))
         {
             printf("Error Open File\n");
-            memset(doc_name,0,sizeof(doc_name));
+            memset(doc_name,0,SEN_LEN*sizeof(char));
             continue;
         }
         break;
@@ -361,7 +360,7 @@ bool Display::replace_line()
     //获取要替换的内容
     int n=0,c=0;
     char* replace_inf=new char[SEN_LEN];
-    memset(replace_inf,0,sizeof(replace_inf));
+    memset(replace_inf,0,SEN_LEN*sizeof(char));
     char ch=getchar();
     while(ch=='\n')
     {
@@ -398,7 +397,7 @@ bool Display::replace_string()
     printf("Content To Be replaced: ");
     int n=0,c=0;
     char* replaced_inf=new char[SEN_LEN];
-    memset(replaced_inf,0,sizeof(replaced_inf));
+    memset(replaced_inf,0,SEN_LEN*sizeof(char));
     char ch=getchar();
     while(ch=='\n')
     {
@@ -416,13 +415,14 @@ bool Display::replace_string()
         ch=getchar();
         replaced_inf[n++]=ch;
     }
-    printf("%s",replaced_inf);
+    // printf("%s",replaced_inf);
     Next_Move_0:
+    replaced_inf[--n]=0;
     //获取替换为的内容
     printf("Content To replace: ");
     n=0,c=0;
     char* replace_inf=new char[SEN_LEN];
-    memset(replace_inf,0,sizeof(replace_inf));
+    memset(replace_inf,0,SEN_LEN*sizeof(char));
     ch=getchar();
     while(ch=='\n')
     {
@@ -440,16 +440,35 @@ bool Display::replace_string()
         ch=getchar();
         replace_inf[n++]=ch;
     }
-    printf("%s",replace_inf);
+    // printf("%s",replace_inf);
     Next_Move_1:
+    replace_inf[--n]=0;
     //替换至缓冲区文本中
     list_node* Mynode=(*mytext_buffer.top_node);
-    for(int i=1;i<mytext_buffer.line;i++)
+    for(int i=1;i<=mytext_buffer.line;i++)
     {
+        int_array myArray=mytext_buffer.seek_phrase(replaced_inf,Mynode);
+        mytext_buffer.char_num+=myArray.array_len*(strlen(replace_inf)-strlen(replaced_inf));
         mytext_buffer.rpls_phrase(replace_inf,replaced_inf,Mynode);
         Mynode=Mynode->after;
     }
     delete [] replaced_inf;
     delete [] replace_inf;
     return TRUE;
+}
+
+void Display::help()
+{
+printf("h  - Help\n");
+printf("v  - View file contents\n");
+printf("i  - Insert a new line after the current line\n");
+printf("d  - Delete a specified line\n");
+printf("f  - Find a specified phrase\n");
+printf("rl - Replace a specified line\n");
+printf("rs - Replace a specified phrase\n");
+printf("m  - Display statistics (number of lines and characters)\n");
+printf("s  - Save file\n");
+printf("a  - Save file as\n");
+printf("c  - Reload a new file\n");
+printf("q  - Quit SimpEditor\n");
 }

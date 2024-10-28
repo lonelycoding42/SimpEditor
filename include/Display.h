@@ -12,8 +12,7 @@ public:
     int lines,cols;                                     //当前窗口尺寸
     char* doc_name;                                     //查看的文件名
     HANDLE myconsole;                                   //当前窗口的句柄
-
-    // COORD cursor_pos;                                   //光标位置
+    // COORD cursor_pos;                                //光标位置
 
     Display();                                          //初始化函数时获取窗口句柄并设置窗口尺寸
     bool view_file();                                   //查看文件内容
@@ -26,6 +25,7 @@ public:
     void show_data();                                   //统计
     bool replace_line();                                //替换行
     bool replace_string();                              //替换字符串
+    void help();                                        //帮助
 
 protected:
     Cursor mycursor;                                    //光标子类

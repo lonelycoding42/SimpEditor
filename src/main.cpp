@@ -36,10 +36,6 @@ int main()
             break;
         //删除某一行
         case 'd':
-            while(ch!='\n')
-            {
-                ch=takein();
-            }
             if(!MyDisplay.delete_file())
             {
                 printf("Error Delete File\n");
@@ -105,8 +101,14 @@ int main()
         case 'm':
             MyDisplay.show_data();
             break;
+        //帮助
+        case 'h':
+            MyDisplay.help();
+            break;
+        //替换
         case 'r':
-            if(getchar()=='l')
+            ch=takein();
+            if(ch=='l')
             {
                 while(ch!='\n')
                 {
@@ -119,7 +121,7 @@ int main()
                 printf("Succese Rplace\n");
                 break;
             }
-            else if(getchar()=='s')
+            else if(ch=='s')
             {
                 while(ch!='\n')
                 {

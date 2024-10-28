@@ -188,6 +188,7 @@ int text_buffer::save_file(char* file_name){
     if ( fp == nullptr) return ERROR;
 
     list_node** node = top_node;
+    list_node* tem = *top_node;
     while ((*node)!=nullptr)
     {   
         // printf("%s", (*node)->sentence);
@@ -195,6 +196,7 @@ int text_buffer::save_file(char* file_name){
         *node = (*node)->after;
     }
     fclose(fp);
+    *top_node = tem;
     return 1;
 }
 
@@ -261,6 +263,10 @@ int_array text_buffer::seek_phrase(char* phrase, list_node* node){
 
 bool text_buffer::rpls_phrase(char* r_phrase, char* rd_phrase, list_node* node){
     int_array pos_array = find_occurrences(node->sentence, rd_phrase);
+    if (!pos_array.array_len)
+    {
+        return true;
+    }
     char* sentence = node->sentence;
     char slice_buf[SEN_LEN] = {0}, buf[SEN_LEN] = {0};
     strncpy(buf, sentence, pos_array.array[0]);
@@ -280,7 +286,6 @@ bool text_buffer::rpls_phrase(char* r_phrase, char* rd_phrase, list_node* node){
 
         sprintf(buf, "%s%s%s", buf, r_phrase, slice_buf);
     }
-
     strcpy(node->sentence, buf);
     return true;
 }
