@@ -19,6 +19,14 @@ public:
     bool view_file();                                   //查看文件内容
     bool insert_file();                                 //插入文件内容
     bool delete_file();                                 //删除文件内容
+    bool find_file();                                   //查找文件内容
+    bool save_file();                                   //保存文件
+    bool resave_file();                                 //文件另存为
+    bool reload();                                      //重新读入
+    void show_data();                                   //统计
+    bool replace_line();                                //替换行
+    bool replace_string();                              //替换字符串
+
 protected:
     Cursor mycursor;                                    //光标子类
     text_buffer mytext_buffer;                          //缓冲区子类

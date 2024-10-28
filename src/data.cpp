@@ -83,7 +83,6 @@ list_node* insert_node_before(list_node** top_node, list_node* pos, char* senten
         new_node->after = pos;
         return *top_node;
     }
-    return;
 }
 
 //删除指定节点
@@ -164,7 +163,12 @@ int text_buffer::load_file(char* file_name){
     // list_node** cur = top_node;
     char buf[SEN_LEN] = {0};
     while (fgets(buf, SEN_LEN, fp)){
+        if (buf[strlen(buf)-1] != '\n')
+        {
+            buf[strlen(buf)] = '\n'; 
+        }
         
+
         // printf("%s", buf);
         // puts(buf);
         node_append(top_node, buf);
@@ -187,7 +191,7 @@ int text_buffer::save_file(char* file_name){
     while ((*node)!=nullptr)
     {   
         // printf("%s", (*node)->sentence);
-        fwrite((*node)->sentence, sizeof((*node)->sentence), 1, fp);
+        fputs((*node)->sentence, fp);
         *node = (*node)->after;
     }
     fclose(fp);
