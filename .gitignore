@@ -34,3 +34,5 @@
 # 忽略.vscode文件
 .vscode
 
+#忽略测试文件
+test
