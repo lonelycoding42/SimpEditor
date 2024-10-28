@@ -40,7 +40,7 @@ Display::Display()
         // mycursor.Moveto(cursor_pos,this->myconsole);
         
         //输入文件名
-        printf("Please Input File's Name:");
+        printf("Please Input File's Name: ");
         int n=0,maxx=100;
         char ch=getchar();
         while(ch!='\n')
@@ -104,3 +104,74 @@ Display::Display()
     **/
 }
 
+bool Display::view_file()  
+{
+    list_node* myLine=(*mytext_buffer.top_node);
+    // printf("%d\n",mytext_buffer.line);
+    for(int i=1;i<=mytext_buffer.line;i++)
+    {
+        if(myLine==NULL) break;
+        printf("%s",myLine->sentence);
+        myLine=myLine->after;
+    }
+    printf("\n");
+    return TRUE;
+}
+
+bool Display::insert_file()
+{
+    int line=0;
+    //得到插入的行数(在某行之后插入)
+    while(1)
+    {
+        printf("After Which Line To Insert(0 to insert before the first line): ");
+        scanf("%d",&line);
+        if(line>mytext_buffer.line||line<0)
+        {
+            printf("Invalid Line Number\n");
+            line=0;
+            continue;
+        }
+        printf("Content To Insert: \n");
+        break;
+    }
+    //获取要插入的内容
+    char ch=getchar();
+    char* insert_inf=new char[SEN_LEN];
+    memset(insert_inf,0,sizeof(insert_inf));
+    fgets(insert_inf,SEN_LEN,stdin);
+    scanf("%*[^\n]%*c");
+    // printf("%s",insert_inf);
+    list_node* Mynode=(*mytext_buffer.top_node);
+    for(int i=1;i<line;i++)
+    {
+        Mynode=Mynode->after;
+    }
+    //插入至缓冲区文本中
+    if(!line)
+    {
+        (*mytext_buffer.top_node)=insert_node_before(mytext_buffer.top_node,Mynode,insert_inf);
+    }
+    else insert_node_after(mytext_buffer.top_node,Mynode,insert_inf);
+    mytext_buffer.line++;
+    mytext_buffer.char_num+=strlen(insert_inf);
+    delete [] insert_inf;
+    return TRUE;
+}
+
+bool Display::delete_file()
+{
+    while(1)
+    {
+        printf("Which Line To Delete: ");
+        int line=0;
+        scanf("%d",&line);
+        if(line>mytext_buffer.line||line<0)
+        {
+            printf("Invalid Line Number\n");
+            continue;
+        }
+        
+    }
+
+}

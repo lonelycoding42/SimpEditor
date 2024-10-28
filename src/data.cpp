@@ -1,11 +1,9 @@
 #include "../include/data.h"
-
 // SL_list::SL_list(char* sentence){
 //     this->ahead = NULL;
 //     this->after = NULL;
 //     strcpy(this->sentense, sentence);
 // }
-
 list_node* ask_for_node(char* sentence){
     list_node* new_node = (list_node*)malloc(sizeof(list_node));
     if (new_node == nullptr)
@@ -13,13 +11,11 @@ list_node* ask_for_node(char* sentence){
         perror("malloc error\n");
         exit(-1);
     }
-
     strcpy(new_node->sentence, sentence);
     new_node->after = nullptr;
     new_node->ahead = nullptr;
     return new_node;
 }
-
 void node_append(list_node** top_node, char* sentence){
     list_node* new_node = ask_for_node(sentence);
     if (*top_node==nullptr)
@@ -34,10 +30,8 @@ void node_append(list_node** top_node, char* sentence){
     }
     return;
 }
-
 void endnode_delete(list_node** top_node){
     if (top_node==nullptr||*top_node==nullptr) return;
-
     if((*top_node)->after==nullptr){
         free(*top_node);
         *top_node = nullptr;
@@ -57,7 +51,6 @@ void endnode_delete(list_node** top_node){
     nxt = nullptr;
     return;
 }
-
 //指定节点后面加入一个节点
 void insert_node_after(list_node** top_node, list_node* pos, char* sentence){
     list_node* new_node = ask_for_node(sentence);
@@ -71,35 +64,37 @@ void insert_node_after(list_node** top_node, list_node* pos, char* sentence){
     
     pos->after = new_node;
     new_node->ahead = pos;
-
     return;
 }
 
 //在指定节点之前插入一个节点
-void insert_node_before(list_node** top_node, list_node* pos, char* sentence){
+list_node* insert_node_before(list_node** top_node, list_node* pos, char* sentence){
     list_node* new_node = ask_for_node(sentence);
     if (*top_node == pos)
     {
         pos->ahead = new_node;
         new_node->after = pos;
+        return new_node;
     }else{
         pos->ahead->after = new_node;
         new_node->ahead = pos->ahead;
 
         pos->ahead = new_node;
         new_node->after = pos;
+        return *top_node;
     }
     return;
 }
 
 //删除指定节点
-void delete_node(list_node** top_node, list_node* pos){
+list_node* delete_node(list_node** top_node, list_node* pos){
     //如果删除头节点
     if(*top_node == pos){
         *top_node = (*top_node)->after;
         (*top_node)->ahead = nullptr;
         free(pos);
         pos = nullptr;
+        return *top_node;
     }else{
         pos->ahead->after = pos->after;
         if(pos->after!=nullptr)
@@ -107,6 +102,7 @@ void delete_node(list_node** top_node, list_node* pos){
         
         free(pos);
         pos = nullptr;
+        return *top_node;
     }
 }
 
@@ -120,42 +116,32 @@ void distory_list(list_node** top_node){
     }
     return;
 }
-
 // int insert(SL_list* ahead_node, SL_list* after_node, char* sentence){
 //     SL_list* app_node = (SL_list*)malloc(sizeof(SL_list));
 //     app_node->ahead = ahead_node;
 //     ahead_node->after = app_node;
-
 //     app_node->after = after_node;
 //     after_node->ahead = app_node;
-
 //     strcpy(app_node->sentense, sentence);    
 //     return 0;
 // }
-
 // int append(SL_list* a_node, char* sentense){
-
 //     //确保是在尾部添加
 //     SL_list* ahead_node = a_node;
 //     while (a_node->after!=nullptr) a_node = a_node->after;
-
 //     SL_list* app_node = (SL_list*)malloc(sizeof(SL_list));
 //     app_node->ahead = ahead_node;
 //     ahead_node->after = app_node;
-
 //     app_node->after = nullptr;
 //     return 0;
 // }
-
 // int remove(SL_list* rm_node){
 //     //确保链节是最后一个
 //     SL_list* node = rm_node;
 //     while (node->after!=nullptr) node = node->after;
-
 //     node->ahead->after = nullptr;
 //     return 0;
 // }
-
 text_buffer::text_buffer(){
     line = 0;
     char_num = 0;
@@ -163,7 +149,6 @@ text_buffer::text_buffer(){
     *top_node = nullptr;
     // *bottom_node = *top_node;
 }
-
 text_buffer::~text_buffer(){
     distory_list(top_node);
     printf("kill text_buffer\n");
@@ -176,7 +161,6 @@ int text_buffer::load_file(char* file_name){
     //这里开销有点大，想想怎么优化
     FILE* fp = fopen(file_name, "r");
     if ( fp == nullptr) return ERROR;
-
     // list_node** cur = top_node;
     char buf[SEN_LEN] = {0};
     while (fgets(buf, SEN_LEN, fp)){
@@ -198,7 +182,7 @@ int text_buffer::save_file(char* file_name){
 
     FILE* fp = fopen(file_name, "w");
     if ( fp == nullptr) return ERROR;
-    
+
     list_node** node = top_node;
     while ((*node)!=nullptr)
     {   
@@ -289,10 +273,10 @@ bool text_buffer::rpls_phrase(char* r_phrase, char* rd_phrase, list_node* node){
                 sentence+pos_array.array[i]+strlen(rd_phrase), 
                 strlen(sentence)-(pos_array.array[i]+strlen(rd_phrase)));
         }
-        
+
         sprintf(buf, "%s%s%s", buf, r_phrase, slice_buf);
     }
-    
+
     strcpy(node->sentence, buf);
     return true;
 }
