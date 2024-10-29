@@ -134,6 +134,7 @@ int main()
                 printf("Succese Rplace\n");
                 break;
             }
+        //非法命令
         default:
             printf("No Such Command, Input 'h' for help\n");
             break;

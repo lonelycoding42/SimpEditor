@@ -124,9 +124,9 @@ bool Display::insert_file()
     while(1)
     {
         printf("After Which Line To Insert(0 to insert before the first line): ");
-        scanf("%d",&line);
-        if(line>mytext_buffer.line||line<0)
+        if(!scanf("%d",&line)||line>mytext_buffer.line||line<0)
         {
+            while(getchar()!='\n');
             printf("Invalid Line Number\n");
             line=0;
             continue;
@@ -179,10 +179,11 @@ bool Display::delete_file()
     {
         printf("Which Line To Delete: ");
         int line=0;
-        scanf("%d",&line);
-        if(line>mytext_buffer.line||line<=0)
+        if(!scanf("%d",&line)||line>mytext_buffer.line||line<0)
         {
+            while(getchar()!='\n');
             printf("Invalid Line Number\n");
+            line=0;
             continue;
         }
         list_node* Myline=(*mytext_buffer.top_node);
@@ -204,7 +205,6 @@ bool Display::find_file()
     {
         printf("Inuput Phrase To Find: ");
         char* find_inf=new char[SEN_LEN];
-        getchar();
         fgets(find_inf,SEN_LEN,stdin);
         find_inf[strlen(find_inf)-1]=0;
         list_node* myLine=(*mytext_buffer.top_node);
@@ -215,7 +215,7 @@ bool Display::find_file()
             for(int i=0;i<strlen(myLine->sentence);i++)
             {
                 if(!myArray.array_len) break;
-                if(i+1>=myArray.array[c])
+                if(i>=myArray.array[c])
                 {
                     printf("\x1b[0;7m");
                 }
@@ -347,9 +347,9 @@ bool Display::replace_line()
     while(1)
     {
         printf("Which Line To Repalce: ");
-        scanf("%d",&line);
-        if(line>mytext_buffer.line||line<0)
+        if(!scanf("%d",&line)||line>mytext_buffer.line||line<0)
         {
+            while(getchar()!='\n');
             printf("Invalid Line Number\n");
             line=0;
             continue;
